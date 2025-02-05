@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Key System</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+        }
+        .key-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px 40px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            min-width: 200px;
+            min-height: 60px;
+        }
+        .key-box:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            transform: translateY(-5px);
+        }
+        .message {
+            margin-top: 20px;
+            color: lime;
+            font-size: 18px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="key-box" id="key-box">Loading...</div>
+        <div class="message" id="message">Copy Success!</div>
+    </div>
+
+    <script>
+        // Gọi API để lấy key
+        fetch('http://127.0.0.1:5000/generate-key')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('key-box').innerText = data.key;
+            })
+            .catch(error => {
+                document.getElementById('key-box').innerText = 'Error loading key';
+            });
+
+        // Copy key khi click
+        document.getElementById('key-box').addEventListener('click', function(event) {
+            if (event.target === this) {
+                const keyText = this.innerText;
+                navigator.clipboard.writeText(keyText).then(() => {
+                    document.getElementById('message').style.display = 'block';
+                    setTimeout(() => {
+                        document.getElementById('message').style.display = 'none';
+                    }, 2000);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
