@@ -65,20 +65,22 @@
     </div>
 
     <script>
-        // Gọi API để lấy key
-        fetch('http://127.0.0.1:5000/generate-key')  // Cập nhật URL API của bạn ở đây
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('key-box').innerText = data.key;
-            })
-            .catch(error => {
-                document.getElementById('key-box').innerText = 'Error loading key';
-            });
+        const apiUrl = "https://your-api-server.com/generate-key"; // Cập nhật URL API
 
-        // Copy key khi click
-        document.getElementById('key-box').addEventListener('click', function(event) {
-            if (event.target === this) {
-                const keyText = this.innerText;
+        async function fetchKey() {
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error("API error");
+                const data = await response.json();
+                document.getElementById('key-box').innerText = data.key;
+            } catch (error) {
+                document.getElementById('key-box').innerText = 'Error loading key';
+            }
+        }
+
+        document.getElementById('key-box').addEventListener('click', function () {
+            const keyText = this.innerText;
+            if (keyText !== "Error loading key") {
                 navigator.clipboard.writeText(keyText).then(() => {
                     document.getElementById('message').style.display = 'block';
                     setTimeout(() => {
@@ -87,6 +89,8 @@
                 });
             }
         });
+
+        fetchKey(); // Gọi API khi trang tải
     </script>
 </body>
 </html>
