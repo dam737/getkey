@@ -72,12 +72,21 @@
                 const response = await fetch(apiUrl);
                 if (!response.ok) throw new Error("API error");
                 const data = await response.json();
-                document.getElementById('key-box').innerText = data.key;
+                
+                // Cập nhật key trong hộp
+                const keyBox = document.getElementById('key-box');
+                keyBox.innerText = data.key;
+
+                // Cập nhật URL mà không tải lại trang
+                const newUrl = `/getkey/${data.key}`;
+                window.history.pushState({}, "", newUrl);
+                
             } catch (error) {
                 document.getElementById('key-box').innerText = 'Error loading key';
             }
         }
 
+        // Copy key vào clipboard khi nhấp vào hộp
         document.getElementById('key-box').addEventListener('click', function () {
             const keyText = this.innerText;
             if (keyText !== "Error loading key") {
