@@ -79,7 +79,8 @@
 
                 // Cập nhật URL mà không tải lại trang
                 const newUrl = `/getkey/${data.key}`;
-                window.history.pushState({}, "", newUrl);
+                // Thay đổi URL trên thanh địa chỉ mà không tải lại trang
+                window.history.pushState({ path: newUrl }, "", newUrl);
                 
             } catch (error) {
                 document.getElementById('key-box').innerText = 'Error loading key';
