@@ -66,17 +66,17 @@
     <script>
         const apiUrl = "https://flask-api-ecme.onrender.com/generate-key";
 
-        async function fetchKey() {
+        async function fetchKey(userId) {
             try {
                 const response = await fetch(apiUrl, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ user_id: "123456789" })
+                    body: JSON.stringify({ user_id: userId })
                 });
                 if (!response.ok) throw new Error("API error");
                 const data = await response.json();
                 document.getElementById('key-box').innerText = data.key;
-                window.location.hash = `getkey/${data.key}`; // Sử dụng Hash Routing
+                window.location.hash = `getkey/${data.key}`; // Lưu key vào URL
             } catch (error) {
                 document.getElementById('key-box').innerText = 'Error loading key';
                 console.error("Fetch error:", error);
@@ -96,11 +96,22 @@
 
         window.onload = function () {
             const hash = window.location.hash.substring(1); // Lấy phần sau dấu #
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get("user_id"); // Lấy user_id từ URL
+
             if (hash.startsWith("getkey/")) {
-                const key = hash.split("/")[1]; // Lấy key từ URL
-                document.getElementById('key-box').innerText = key;
+                if (!userId) {
+                    document.getElementById('key-box').innerText = "Access Denied!";
+                    document.getElementById('key-box').style.color = "red";
+                } else {
+                    const key = hash.split("/")[1]; // Lấy key từ URL
+                    document.getElementById('key-box').innerText = key;
+                }
+            } else if (userId) {
+                fetchKey(userId); // Chỉ tạo key nếu có user_id
             } else {
-                fetchKey();
+                document.getElementById('key-box').innerText = "Access Denied!";
+                document.getElementById('key-box').style.color = "red";
             }
         };
 
