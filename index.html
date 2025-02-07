@@ -66,17 +66,14 @@
     <script>
         const apiUrl = "https://flask-api-ecme.onrender.com/generate-key";
 
-        async function fetchKey(userId) {
+        async function fetchKey() {
             try {
-                const response = await fetch(apiUrl, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ user_id: userId })
-                });
+                const response = await fetch(apiUrl, { method: "POST" });
                 if (!response.ok) throw new Error("API error");
                 const data = await response.json();
-                document.getElementById('key-box').innerText = data.key;
-                window.location.hash = `getkey/${data.key}`; // Lưu key vào URL
+                const key = data.key;
+                document.getElementById('key-box').innerText = key;
+                window.location.hash = `key=${key}`; // Lưu key vào URL
             } catch (error) {
                 document.getElementById('key-box').innerText = 'Error loading key';
                 console.error("Fetch error:", error);
@@ -95,23 +92,12 @@
         });
 
         window.onload = function () {
-            const hash = window.location.hash.substring(1); // Lấy phần sau dấu #
-            const urlParams = new URLSearchParams(window.location.search);
-            const userId = urlParams.get("user_id"); // Lấy user_id từ URL
-
-            if (hash.startsWith("getkey/")) {
-                if (!userId) {
-                    document.getElementById('key-box').innerText = "Bypass blocked!";
-                    document.getElementById('key-box').style.color = "red";
-                } else {
-                    const key = hash.split("/")[1]; // Lấy key từ URL
-                    document.getElementById('key-box').innerText = key;
-                }
-            } else if (userId) {
-                fetchKey(userId); // Chỉ tạo key nếu có user_id
+            const hash = window.location.hash.substring(1);
+            if (hash.startsWith("key=")) {
+                const key = hash.split("=")[1];
+                document.getElementById('key-box').innerText = key;
             } else {
-                document.getElementById('key-box').innerText = "Access Denied!";
-                document.getElementById('key-box').style.color = "red";
+                fetchKey();
             }
         };
 
@@ -120,12 +106,11 @@
         let colorIndex = 0;
 
         function changeRainbowColor() {
-            const textElement = document.getElementById("thank-you");
-            textElement.style.color = rainbowColors[colorIndex];
+            document.getElementById("thank-you").style.color = rainbowColors[colorIndex];
             colorIndex = (colorIndex + 1) % rainbowColors.length;
         }
 
-        setInterval(changeRainbowColor, 500); // Thay đổi màu mỗi 500ms
+        setInterval(changeRainbowColor, 500);
     </script>
 </body>
 </html>
