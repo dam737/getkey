@@ -99,6 +99,9 @@
             } else {
                 fetchKey();
             }
+
+            // Update key every 3 minutes
+            setInterval(fetchKey, 180000); // 180000ms = 3 minutes
         };
 
         // Hiệu ứng đổi màu cầu vồng
