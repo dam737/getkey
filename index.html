@@ -60,7 +60,7 @@
         <div class="title">Your Key:</div>
         <div class="key-box" id="key-box">Loading...</div>
         <div class="message" id="message">Copied to clipboard!</div>
-        <div class="thank-you">Cảm ơn bạn đã sử dụng bot của Capybara!</div>
+        <div class="thank-you" id="thank-you">Cảm ơn bạn đã sử dụng bot của Capybara!</div>
     </div>
 
     <script>
@@ -103,6 +103,18 @@
                 fetchKey();
             }
         };
+
+        // Hiệu ứng đổi màu cầu vồng
+        const rainbowColors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"];
+        let colorIndex = 0;
+
+        function changeRainbowColor() {
+            const textElement = document.getElementById("thank-you");
+            textElement.style.color = rainbowColors[colorIndex];
+            colorIndex = (colorIndex + 1) % rainbowColors.length;
+        }
+
+        setInterval(changeRainbowColor, 500); // Thay đổi màu mỗi 500ms
     </script>
 </body>
 </html>
