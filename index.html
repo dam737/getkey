@@ -49,19 +49,15 @@
             animation: fadeIn 0.5s ease;
         }
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="key-box" id="key-box">Loading...</div>
-        <div class="message" id="message">Copy Success!</div>
+        <div class="message" id="message">Copied to clipboard!</div>
     </div>
 
     <script>
@@ -69,34 +65,37 @@
 
         async function fetchKey() {
             try {
-                const response = await fetch(apiUrl);
+                const response = await fetch(apiUrl, {
+                    method: "POST",  // Sử dụng POST thay vì GET
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ user_id: "123456789" }) // Thay user_id thực tế vào đây
+                });
+
                 if (!response.ok) throw new Error("API error");
                 const data = await response.json();
                 
-                // Cập nhật key trong hộp
                 const keyBox = document.getElementById('key-box');
-                keyBox.innerText = data.key;
+                keyBox.innerText = data.key; // Cập nhật key
 
                 // Cập nhật URL mà không tải lại trang
                 const newUrl = `/getkey/${data.key}`;
-                // Thay đổi URL trên thanh địa chỉ mà không tải lại trang
                 window.history.pushState({ path: newUrl }, "", newUrl);
-                
+
             } catch (error) {
                 document.getElementById('key-box').innerText = 'Error loading key';
+                console.error("Fetch error:", error);
             }
         }
 
         // Copy key vào clipboard khi nhấp vào hộp
         document.getElementById('key-box').addEventListener('click', function () {
             const keyText = this.innerText;
-            if (keyText !== "Error loading key") {
+            if (keyText !== "Error loading key" && keyText !== "Loading...") {
                 navigator.clipboard.writeText(keyText).then(() => {
-                    document.getElementById('message').style.display = 'block';
-                    setTimeout(() => {
-                        document.getElementById('message').style.display = 'none';
-                    }, 2000);
-                });
+                    const message = document.getElementById('message');
+                    message.style.display = 'block';
+                    setTimeout(() => { message.style.display = 'none'; }, 2000);
+                }).catch(err => console.error("Clipboard error:", err));
             }
         });
 
