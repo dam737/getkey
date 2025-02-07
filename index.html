@@ -101,7 +101,7 @@
 
             if (hash.startsWith("getkey/")) {
                 if (!userId) {
-                    document.getElementById('key-box').innerText = "Access Denied!";
+                    document.getElementById('key-box').innerText = "Bypass blocked!";
                     document.getElementById('key-box').style.color = "red";
                 } else {
                     const key = hash.split("/")[1]; // Lấy key từ URL
