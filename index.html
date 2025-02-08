@@ -65,7 +65,6 @@
 
     <script>
         const apiUrl = "https://flask-api-ecme.onrender.com/generate-key";
-        const shortenApi = "https://seotrieuview.com/api/api-develop?token=95ad8528f35ff01f936ebae6c8d4bec853ac2c86&format=json&url=";
 
         async function fetchKey() {
             try {
@@ -74,17 +73,12 @@
                 const data = await response.json();
                 const key = data.key;
 
-                // Tạo link gốc
-                const originalUrl = `https://dam737.github.io/getkey/?key=${key}&t=${Date.now()}`;
-                
-                // Rút gọn link
-                const shortResponse = await fetch(shortenApi + encodeURIComponent(originalUrl));
-                const shortData = await shortResponse.json();
-                const shortUrl = shortData.shortenedUrl || originalUrl;
-
+                // Hiển thị key lên giao diện
                 document.getElementById('key-box').innerText = key;
-                window.location.hash = `key=${key}`; // Lưu key vào URL
 
+                // Cập nhật URL với key
+                const newUrl = `${window.location.origin}${window.location.pathname}?key=${key}`;
+                window.history.pushState({}, "", newUrl);
             } catch (error) {
                 document.getElementById('key-box').innerText = 'Error loading key';
                 console.error("Fetch error:", error);
@@ -103,9 +97,10 @@
         });
 
         window.onload = function () {
-            const hash = window.location.hash.substring(1);
-            if (hash.startsWith("key=")) {
-                const key = hash.split("=")[1];
+            const params = new URLSearchParams(window.location.search);
+            const key = params.get("key");
+
+            if (key) {
                 document.getElementById('key-box').innerText = key;
             } else {
                 fetchKey();
