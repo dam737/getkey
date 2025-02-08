@@ -65,6 +65,7 @@
 
     <script>
         const apiUrl = "https://flask-api-ecme.onrender.com/generate-key";
+        const shortenApi = "https://seotrieuview.com/api/api-develop?token=95ad8528f35ff01f936ebae6c8d4bec853ac2c86&format=json&url=";
 
         async function fetchKey() {
             try {
@@ -72,8 +73,18 @@
                 if (!response.ok) throw new Error("API error");
                 const data = await response.json();
                 const key = data.key;
+
+                // Tạo link gốc
+                const originalUrl = `https://dam737.github.io/getkey/?key=${key}&t=${Date.now()}`;
+                
+                // Rút gọn link
+                const shortResponse = await fetch(shortenApi + encodeURIComponent(originalUrl));
+                const shortData = await shortResponse.json();
+                const shortUrl = shortData.shortenedUrl || originalUrl;
+
                 document.getElementById('key-box').innerText = key;
-                window.location.hash = key=${key}; // Lưu key vào URL
+                window.location.hash = `key=${key}`; // Lưu key vào URL
+
             } catch (error) {
                 document.getElementById('key-box').innerText = 'Error loading key';
                 console.error("Fetch error:", error);
